@@ -30,4 +30,8 @@ public class UserDataByLogin implements SqlCriteria {
                     "exception occurance when creating PreparedStatement");
         }
     }
+
+    public UserDataByLogin makeUserDataByLogin(String login) {
+        return new UserDataByLogin(login);
+    }
 }
