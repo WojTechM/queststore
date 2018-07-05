@@ -38,4 +38,16 @@ public class Level {
     public void setThreshold(int threshold) {
         this.threshold = threshold;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Level)) return false;
+
+        Level level = (Level) o;
+
+        return (level.getId() == this.id &&
+                level.getName().equals(this.getName()) &&
+                level.getThreshold() == this.getThreshold());
+    }
 }
