@@ -17,10 +17,8 @@ public class RewardManager {
     public void grant(String login, int questId) throws ServiceLayerException {
         try {
 
-            Repository<Student> studentRepository = (StudentRepository)REPOSITORY_POOL.getRepository(Repositories.STUDENT);
-            Student student = studentRepository.query(new StudentByLogin(login)).get(0);
-            Repository<Quest> questRepository = (QuestRepository)REPOSITORY_POOL.getRepository(Repositories.QUEST);
-            Quest quest = questRepository.query(new QuestById(questId)).get(0);
+            Student student = loadStudentByLogin(login);
+            Quest quest = loadQuestById(questId);
 
             int experience = student.getExperience() + quest.getReward();
 
@@ -32,4 +30,13 @@ public class RewardManager {
         }
     }
 
+    public Student loadStudentByLogin(String login) throws PersistenceLayerException {
+        Repository<Student> studentRepository = (StudentRepository)REPOSITORY_POOL.getRepository(Repositories.STUDENT);
+        return studentRepository.query(new StudentByLogin(login)).get(0);
+    }
+
+    public Quest loadQuestById(int questId) throws PersistenceLayerException {
+        Repository<Quest> questRepository = (QuestRepository)REPOSITORY_POOL.getRepository(Repositories.QUEST);
+        return questRepository.query(new QuestById(questId)).get(0);
+    }
 }

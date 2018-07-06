@@ -20,15 +20,16 @@ public class ShopManager {
 
     public void buyArtifact(String login, int artifactId) throws ServiceLayerException {
         try {
+
             Repository<Wallet> walletRepository = (WalletRepository) REPOSITORY_POOL
                     .getRepository(Repositories.WALLET);
-            Wallet wallet = walletRepository.query(new WalletByOwnerLogin(login)).get(0);
+
+            Wallet wallet = loadWalletByLogin(walletRepository, login);
             int walletBalance = wallet.getBalance();
             int walletId = wallet.getId();
 
-            Repository<Artifact> artifactRepository = (ArtifactRepository) REPOSITORY_POOL
-                    .getRepository(Repositories.ARTIFACT);
-            Artifact artifact = artifactRepository.query(new ArtifactById(artifactId)).get(0);
+
+            Artifact artifact = loadArtifactById(artifactId);
             int artifactPrice = artifact.getPrice();
 
             if (walletBalance >= artifactPrice) {
@@ -61,4 +62,13 @@ public class ShopManager {
         }
     }
 
+    public Wallet loadWalletByLogin(Repository<Wallet> walletRepository, String login) throws PersistenceLayerException {
+        return walletRepository.query(new WalletByOwnerLogin(login)).get(0);
+    }
+
+    public Artifact loadArtifactById(int artifactId) throws PersistenceLayerException {
+        Repository<Artifact> artifactRepository = (ArtifactRepository) REPOSITORY_POOL
+                .getRepository(Repositories.ARTIFACT);
+        return artifactRepository.query(new ArtifactById(artifactId)).get(0);
+    }
 }

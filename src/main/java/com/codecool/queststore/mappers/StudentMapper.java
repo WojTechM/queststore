@@ -25,13 +25,8 @@ public class StudentMapper implements Mapper {
         String login = resultSet.getString("login");
         int experience = resultSet.getInt("exp");
 
-        Repository<UserData> userDataRepository = REPOSITORY_POOL.getRepository(Repositories.USER_DATA);
-        SqlCriteria getUserDataByLogin = new UserDataByLogin(login);
-        UserData userData = userDataRepository.query(getUserDataByLogin).get(0);
-
-        Repository<Wallet> walletRepository = REPOSITORY_POOL.getRepository(Repositories.WALLET);
-        SqlCriteria getWalletByOwnerLogin = new WalletByOwnerLogin(resultSet.getString("login"));
-        Wallet wallet = walletRepository.query(getWalletByOwnerLogin).get(0);
+        UserData userData = getStudentData(login);
+        Wallet wallet = getStudentWallet(resultSet);
 
         return new Student(userData, experience, wallet);
     }
@@ -72,5 +67,19 @@ public class StudentMapper implements Mapper {
 
         json.append("]}");
         return json.toString();
+    }
+
+    UserData getStudentData(String login) throws PersistenceLayerException {
+        Repository<UserData> userDataRepository = REPOSITORY_POOL.getRepository(Repositories.USER_DATA);
+        SqlCriteria getUserDataByLogin = new UserDataByLogin(login);
+        UserData userData = userDataRepository.query(getUserDataByLogin).get(0);
+        return userData;
+    }
+
+    Wallet getStudentWallet(ResultSet resultSet) throws SQLException, PersistenceLayerException {
+        Repository<Wallet> walletRepository = REPOSITORY_POOL.getRepository(Repositories.WALLET);
+        SqlCriteria getWalletByOwnerLogin = new WalletByOwnerLogin(resultSet.getString("login"));
+        Wallet wallet = walletRepository.query(getWalletByOwnerLogin).get(0);
+        return wallet;
     }
 }

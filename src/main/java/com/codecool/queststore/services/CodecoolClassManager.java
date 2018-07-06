@@ -56,13 +56,11 @@ public class CodecoolClassManager {
             codecoolClassRepository = (CodecoolClassRepository) repositoryPool
                     .getRepository(Repositories.CODECOOL_CLASS);
 
-            List<CodecoolClass> codecoolClasses = this.get(id);
-            for (CodecoolClass codecoolClass : codecoolClasses) {
-                codecoolClass.setId(id);
-                codecoolClass.setName(name);
+            CodecoolClass codecoolClass = this.get(id).get(0);
+            codecoolClass.setId(id);
+            codecoolClass.setName(name);
+            codecoolClassRepository.update(codecoolClass);
 
-                codecoolClassRepository.update(codecoolClass);
-            }
         } catch (PersistenceLayerException e) {
             throw new ServiceLayerException(String.format("Can't edit class %s: %s", name, e.getMessage()));
         }
@@ -74,11 +72,9 @@ public class CodecoolClassManager {
             codecoolClassRepository = (CodecoolClassRepository) repositoryPool
                     .getRepository(Repositories.CODECOOL_CLASS);
 
-            List<CodecoolClass> codecoolClasses = this.get(id);
+            CodecoolClass codecoolClass = this.get(id).get(0);
+            codecoolClassRepository.delete(codecoolClass);
 
-            for (CodecoolClass codecoolClass : codecoolClasses) {
-                codecoolClassRepository.delete(codecoolClass);
-            }
         } catch (PersistenceLayerException e) {
             throw new ServiceLayerException(String.format("Can't remove class (id: %d): %s", id, e.getMessage()));
         }
